@@ -8,12 +8,12 @@
     <div class="editor-content">
       <div class="latex-input">
         <textarea 
+          v-model="content"
           class="form-control rounded-3 shadow-sm p-3"
           rows="20"
           placeholder="Введите LaTeX-код здесь..."
           style="font-family: 'Courier New', monospace; font-size: 16px;"
         >
-        {{ content }}
       
       </textarea>
       </div>
@@ -37,11 +37,21 @@ const router = useRouter();
 const route = useRoute();
 const documentId = route.params.id;
 
+const isNewPage = ref(documentId ==='new')
 
 async function fetchDocumentContent() {
-  const text = await $fetch(`/api-proxy/documents/findById/${documentId}`);
-  content.value = text
-  // Используем полученные данные
+  if (isNewPage.value){
+  content.value='';
+    return;
+  }
+
+
+  
+    const response = await $fetch(`/api-proxy/documents/findById/${documentId}`);
+    console.log("Получен ответ:", response);
+    
+      content.value = response.content;
+  
 }
 const goToDocuments = () => {
   router.push('/documents');

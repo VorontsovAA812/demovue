@@ -8,14 +8,19 @@
           <ListGroupItem
             v-for="document in documents"
             :key="document.id"
-            class="d-flex justify-content-between align-items-center larger-item"
-          >
+            class="d-flex justify-content-between align-items-center larger-item">
+
             <NuxtLink :to="`/editor/${document.id}`" class="flex-grow-1">
               {{ document.title }}
             </NuxtLink>
-            <BButton variant="danger" size="sm" @click.stop="deleteDocument(document.id)">
+
+            <BButton 
+            variant="danger" 
+            size="sm" 
+            @click.stop="deleteDocument(document.id)">
               Удалить
             </BButton>
+
           </ListGroupItem>
         </ListGroup>
         <CardFooter>Ваши документы</CardFooter>
@@ -62,7 +67,7 @@ function handlePrimaryClick() {
   console.log('Primary button clicked')
   
   
-  router.push('/editor')
+  router.push('/editor/new')
   
   // Добавьте здесь нужную логику
 }
