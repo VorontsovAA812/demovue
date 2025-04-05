@@ -30,7 +30,7 @@
       <BButton 
         class="primary-button"
         variant="success"
-        @click="handlePrimaryClick"
+        @click="createDocument"
         size="lg"
         color="primary-subtle" 
       >
@@ -42,12 +42,14 @@
 </template>
 
 <script setup>
+import '~/assets/css/documents.css'
+
 import { onMounted, ref } from 'vue'
 
 const documents = ref([])
 
 const router = useRouter()
-
+console.log("client:" + import.meta.client, "server:"+ import.meta.server)
 
 function deleteDocument(documentId) {
   documents.value = documents.value.filter(doc => doc.id !== documentId)
@@ -61,64 +63,25 @@ async function loadDocuments() {
 
 
 
-
-
-function handlePrimaryClick() {
-  console.log('Primary button clicked')
-  
-  
+async function createDocument() {
   router.push('/editor/new')
+
   
-  // Добавьте здесь нужную логику
+
+  const response = await $fetch('/api-proxy/documents',{
+  method: "POST",
+  body:{ title: "Новый документ",
+      content: ""
+  }
+});
+
 }
+  
+
 
 onMounted(loadDocuments)
 </script>
 
 <style scoped>
-a {
-  text-decoration: none !important;
-  transition: all 0.2s ease;
-  color:black;
-}
-.page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-}
 
-.content-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 700px; /* Увеличим общую ширину */
-}
-
-.documents-card {
-  width: 100%;
-}
-
-.primary-button {
-  position: absolute;
-  top: 0;
-  right: -320px; /* Выносим кнопку за пределы карточки */
-  width: 280px;
-  text-decoration: none !important; /* Убираем подчеркивание */
-
-}
-
-/* Адаптация для мобильных устройств */
-@media (max-width: 768px) {
-  .content-wrapper {
-    max-width: 100%;
-  }
-  
-  .primary-button {
-    position: static;
-    margin-top: 20px;
-    width: 100%;
-    right: auto;
-  }
-}
 </style>

@@ -5,7 +5,17 @@
       ← Назад
     </button>
 
+
     <div class="editor-content">
+      <div class="document-title-input mb-3">
+        <input 
+          v-model="documentTitle" 
+          type="text" 
+          class="form-control" 
+          placeholder="Название документа"
+        >
+      </div>
+
       <div class="latex-input">
         <textarea 
           v-model="content"
@@ -18,8 +28,10 @@
       </textarea>
       </div>
 
-      <button class="submit-button">
-        Скомпилировать LaTeX
+      <button class="submit-button"
+              @click.stop ="saveDocument()"
+      >
+        Скомпилировать(сохранить) документ
       </button>
     </div>
   </div>
@@ -28,6 +40,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue'
+const documentTitle = ref('Новый документ')
 
 const content = ref()
 
@@ -44,15 +57,51 @@ async function fetchDocumentContent() {
   content.value='';
     return;
   }
+  try{
+    const response = await $fetch(`/api-proxy/documents/${documentId}`,{
+         method: "GET"
+    });
+    content.value = response.content;
+    documentTitle.value = response.title
+  }
+  catch(error)
+  {
+    console.error('Ошибка при загрузке документа:', error);
 
+  }
 
   
-    const response = await $fetch(`/api-proxy/documents/findById/${documentId}`);
-    console.log("Получен ответ:", response);
-    
-      content.value = response.content;
   
 }
+
+
+async function saveDocument(){
+  
+  try {
+    const response = await $fetch(`/api-proxy/documents/${documentId}`,{
+      method: "PATCH",
+      body: {
+        title: documentTitle.value,
+        content: content.value
+      }
+    });
+    
+    // Показываем алерт при успешном сохранении
+    alert('Документ успешно сохранен!');
+    
+    return response;
+  } catch (error) {
+    // Опционально: обработка ошибок
+    console.error('Ошибка при сохранении документа:', error);
+    alert('Произошла ошибка при сохранении документа');
+  }
+}
+
+
+
+
+
+
 const goToDocuments = () => {
   router.push('/documents');
 };
@@ -62,80 +111,6 @@ onMounted(fetchDocumentContent)
 </script>
 
 <style scoped>
-.latex-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  position: relative;
-}
+@import url("~/assets/css/editor.css");
 
-.back-button {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  padding: 8px 20px;
-  background-color: #f8f9fa;
-  color: #212529;
-  border: 1px solid #dee2e6;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  z-index: 1;
-}
-
-.back-button:hover {
-  background-color: #e9ecef;
-  transform: translateX(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.editor-content {
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
-  margin-top: 15px; /* Добавляем отступ сверху */
-}
-
-.latex-input {
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.latex-input textarea {
-  width: 100%;
-  resize: none; /* Запрещаем пользователю изменять размер */
-}
-
-.submit-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #0d6efd;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submit-button:hover {
-  background-color: #0b5ed7;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-  .latex-container {
-    padding-top: 70px;
-  }
-  
-  .back-button {
-    left: 50%;
-    top: 15px;
-    transform: translateX(-50%);
-    width: max-content;
-  }
-}
 </style>

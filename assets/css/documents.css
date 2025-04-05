@@ -1,0 +1,45 @@
+a{
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    color:black;
+  }
+  .page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .content-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 700px; /* Увеличим общую ширину */
+  }
+  
+  .documents-card {
+    width: 100%;
+  }
+  
+  .primary-button {
+    position: absolute;
+    top: 0;
+    right: -320px; /* Выносим кнопку за пределы карточки */
+    width: 280px;
+    text-decoration: none !important; /* Убираем подчеркивание */
+  
+  }
+  
+  /* Адаптация для мобильных устройств */
+  @media (max-width: 768px) {
+    .content-wrapper {
+      max-width: 100%;
+    }
+    
+    .primary-button {
+      position: static;
+      margin-top: 20px;
+      width: 100%;
+      right: auto;
+    }
+  }
