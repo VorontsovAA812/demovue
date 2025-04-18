@@ -76,6 +76,30 @@ async function fetchDocumentContent() {
 
 
 async function saveDocument(){
+
+  if (isNewPage.value){
+    try
+      {
+      const response = await $fetch('/api-proxy/documents',{
+      method: "POST",
+      body:{ title: documentTitle.value,
+          content: content.value
+      }
+    });
+    const newDocumentId = response.documentId;
+    await router.push(`/editor/${newDocumentId}`);
+    isNewPage.value = false;
+  
+    alert('Документ успешно создан!');
+  }
+    catch (error) {
+      console.error('Ошибка создания:', error);
+      alert('Ошибка при создании документа');
+    }
+    return;
+  }
+
+
   
   try {
     const response = await $fetch(`/api-proxy/documents/${documentId}`,{

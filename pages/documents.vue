@@ -68,13 +68,6 @@ async function createDocument() {
 
   
 
-  const response = await $fetch('/api-proxy/documents',{
-  method: "POST",
-  body:{ title: "Новый документ",
-      content: ""
-  }
-});
-
 }
   
 
