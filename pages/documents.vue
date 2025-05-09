@@ -51,9 +51,17 @@ const documents = ref([])
 const router = useRouter()
 console.log("client:" + import.meta.client, "server:"+ import.meta.server)
 
-function deleteDocument(documentId) {
-  documents.value = documents.value.filter(doc => doc.id !== documentId)
+async function deleteDocument(documentId) {
+  try {
+    await $fetch(`/api-proxy/documents/${documentId}`, {
+      method: 'DELETE'
+    })
+    documents.value = documents.value.filter(doc => doc.id !== documentId)
+  } catch (error) {
+    alert('Ошибка при удалении документа: ' + (error?.data?.message || error.message))
+  }
 }
+
 
 async function loadDocuments() {
   const data = await $fetch('/api-proxy/documents/documentList')

@@ -5,6 +5,19 @@
       ← Назад
     </button>
 
+  <!-- Кнопка и поле справа вверху -->
+<div class="invite-floating">
+  <input
+    v-model="inviteUsername"
+    placeholder="Имя пользователя"
+    class="invite-input-fixed"
+  />
+  <button class="invite-btn-fixed" @click="inviteUser">Пригласить</button>
+</div>
+
+
+
+
     <div class="editor-content">
       <div class="document-title-input mb-3">
         <input 
@@ -165,73 +178,46 @@ onMounted(fetchDocumentContent);
 
 <style scoped>
 @import url("~/assets/css/editor.css");
-
-/* стили для предпросмотра */
-.buttons-container {
+@import url("~/assets/css/preview.css");
+.invite-floating {
+  position: absolute;
+  top: 12px;
+  right: 12px;
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 6px;
+  align-items: center;
+  z-index: 10;
+  opacity: 0.7;             /* менее заметный */
+  font-size: 12px;           /* мелкий текст */
 }
 
-.compile-button {
-  flex: 1;
-  padding: 12px;
-  background-color: #28a745;
+.invite-input-fixed {
+  padding: 3px 6px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100px;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.invite-btn-fixed {
+  padding: 3px 8px;
+  font-size: 12px;
+  background-color: #6c757d; /* приглушённый серо-синий */
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.compile-button:hover {
-  background-color: #218838;
+.invite-btn-fixed:hover {
+  background-color: #5a6268;
 }
 
-.compile-button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
 
-.submit-button {
-  flex: 1;
-}
 
-.pdf-preview-section {
-  width: 100%;
-  margin-top: 20px;
-  border-top: 1px solid #dee2e6;
-  padding-top: 20px;
-}
 
-.preview-title {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-}
 
-.pdf-container {
-  width: 100%;
-  height: 600px;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.pdf-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-.no-preview {
-  width: 100%;
-  height: 600px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
-  color: #6c757d;
-}
 </style>
