@@ -89,19 +89,29 @@ export function useEditor() {
       isCompiling.value = false;
     }
   }
-
-  function inviteUser() {
-    alert(`Приглашён пользователь: ${inviteUsername.value}`);
+async function inviteUser() {
+  if (!inviteUsername.value.trim()) return alert('Введите имя пользователя');
+  try {
+    await $fetch(`/api-proxy/documents/${documentId}/invite/${inviteUsername.value}`, {
+      method: 'POST'
+    });
+    alert(`Пользователь ${inviteUsername.value} приглашён`);
+    inviteUsername.value = '';
+  } catch (e) {
+    console.error(e);
+    alert('Ошибка при приглашении пользователя');
   }
+}
+  
 
   return {
     documentTitle,
     content,
     pdfUrl,
     showPreview,
+    inviteUsername,
     isCompiling,
     isNewPage,
-    inviteUsername,
     goToDocuments,
     fetchDocumentContent,
     saveDocument,

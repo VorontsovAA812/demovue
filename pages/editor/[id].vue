@@ -62,6 +62,8 @@
 import { onMounted } from 'vue';
 import { useEditor } from '@/composables/useEditor';
 
+
+
 const {
   documentTitle,
   content,
@@ -69,15 +71,17 @@ const {
   showPreview,
   isCompiling,
   isNewPage,
-  inviteUsername,
   goToDocuments,
   fetchDocumentContent,
   saveDocument,
   compileDocument,
-  inviteUser
+  inviteUser,
+  inviteUsername,
 } = useEditor();
 
 onMounted(fetchDocumentContent);
+
+
 
 </script>
 
