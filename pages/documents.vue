@@ -6,24 +6,31 @@
       <Card class="documents-card">
         <ListGroup flush>
           <ListGroupItem
-            v-for="document in documents"
-            :key="document.id"
-            class="d-flex justify-content-between align-items-center larger-item">
+  v-for="document in documents"
+  :key="document.id"
+  class="d-flex justify-content-between align-items-center larger-item"
+>
+  <div class="flex-grow-1">
+    <NuxtLink :to="`/editor/${document.id}`">
+      {{ document.title }}
+    </NuxtLink>
+    <div class="text-muted small mt-1">
+  <span v-if="document.owner">Автор: вы</span>
+  <span v-else>Автор: {{ document.author }}</span>
+</div>
 
-            <NuxtLink :to="`/editor/${document.id}`" class="flex-grow-1">
-              {{ document.title }}
-            </NuxtLink>
+  </div>
 
-            <BButton 
-            variant="danger" 
-            size="sm" 
-            @click.stop="deleteDocument(document.id)">
-              Удалить
-            </BButton>
+  <BButton 
+    variant="danger" 
+    size="sm" 
+    @click.stop="deleteDocument(document.id)">
+    Удалить
+  </BButton>
+</ListGroupItem>
 
-          </ListGroupItem>
         </ListGroup>
-        <CardFooter>Ваши документы</CardFooter>
+        <CardFooter>Доступные документы</CardFooter>
       </Card>
 
       <!-- Кнопка Primary справа -->
@@ -66,6 +73,7 @@ async function deleteDocument(documentId) {
 async function loadDocuments() {
   const data = await $fetch('/api-proxy/documents/documentList')
   documents.value = data
+  console.log(documents.value)
 }
 
 
@@ -77,10 +85,14 @@ async function createDocument() {
   
 
 }
-  
 
 
-onMounted(loadDocuments)
+
+onMounted(async () => {
+  await loadDocuments()
+})
+ 
+
 </script>
 
 <style scoped>
