@@ -1,68 +1,78 @@
 <template>
   <div class="latex-container">
-    <!-- Кнопка "Назад" слева -->
-    <button class="back-button" @click="goToDocuments">
-      ← Назад
-    </button>
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+    <div class="editor-header-full">
+      <button class="back-button" @click="goToDocuments">← Назад</button>
 
-  <!-- Кнопка и поле справа вверху -->
-<div class="invite-floating">
-  <input
-    v-model="inviteUsername"
-    placeholder="Имя пользователя"
-    class="invite-input-fixed"
-  />
-  <button class="invite-btn-fixed" @click="inviteUser">Пригласить</button>
-</div>
+      <h1 class="editor-title">Редактор документов</h1>
 
+      <div class="invite-floating">
+        <input
+          v-model="inviteUsername"
+          placeholder="Имя пользователя"
+          class="invite-input-fixed"
+        />
+        <button class="invite-btn-fixed" @click="inviteUser">Пригласить</button>
+      </div>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="editor-content">
-      <div class="document-title-input mb-3">
-        <input 
-          v-model="documentTitle" 
-          type="text" 
-          class="form-control" 
-          placeholder="Название документа"
-        >
+      <!-- Левая часть -->
+      <div class="editor-left">
+        <div class="document-title-input mb-3">
+          <input
+            v-model="documentTitle"
+            type="text"
+            class="form-control"
+            placeholder="Название документа"
+          />
+        </div>
+
+        <div class="latex-input">
+          <textarea
+            v-model="content"
+            class="form-control rounded-3 shadow-sm p-3"
+            rows="20"
+            placeholder="Введите LaTeX-код здесь..."
+            style="font-family: 'Courier New', monospace; font-size: 16px;"
+          ></textarea>
+        </div>
+
+        <div class="buttons-container">
+          <button class="submit-button" @click.stop="saveDocument()">
+            Сохранить документ
+          </button>
+          <button class="compile-button" @click.stop="compileDocument()" :disabled="isCompiling">
+            {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
+          </button>
+        </div>
       </div>
 
-      <div class="latex-input">
-        <textarea 
-          v-model="content"
-          class="form-control rounded-3 shadow-sm p-3"
-          rows="20"
-          placeholder="Введите LaTeX-код здесь..."
-          style="font-family: 'Courier New', monospace; font-size: 16px;"
-        ></textarea>
-      </div>
-
-      <div class="buttons-container">
-        <button class="submit-button" @click.stop="saveDocument()">
-          Сохранить документ
-        </button>
-        <button class="compile-button" @click.stop="compileDocument()" :disabled="isCompiling">
-          {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
-        </button>
-      </div>
-      
-      <!-- PDF Preview Section -->
-      <div class="pdf-preview-section" v-if="showPreview">
-        <h3 class="preview-title">Предпросмотр документа</h3>
-        <div class="pdf-container" v-if="pdfUrl">
-          <iframe :src="pdfUrl" class="pdf-frame"></iframe>
-        </div>
-        <div class="no-preview" v-else>
-          <p>Нажмите "Скомпилировать и просмотреть" для отображения документа</p>
-        </div>
+      <!-- Правая часть -->
+      <div class="commits-panel">
+        <h4>История версий</h4>
+        <ul>
+          <li v-for="commit in commits" :key="commit.id" class="commit-item">
+            <div><strong>{{ commit.author }}</strong></div>
+            <div class="small">{{ commit.date }}</div>
+            <button class="btn btn-sm btn-outline-primary mt-1" @click="restoreCommit(commit.id)">
+              Откатиться
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+definePageMeta({
+  layout: false
+})
+
 import { onMounted } from 'vue';
 import { useEditor } from '@/composables/useEditor';
-
-
 
 const {
   documentTitle,
@@ -77,21 +87,19 @@ const {
   compileDocument,
   inviteUser,
   inviteUsername,
+  commits,
+  restoreCommit
 } = useEditor();
 
 onMounted(fetchDocumentContent);
-
-
-
 </script>
 
 <style>
 @import url("~/assets/css/editor.css");
 @import url("~/assets/css/preview.css");
+@import url("~/assets/css/commits.css");
 @import url("~/assets/css/inviteButton.css");
-
-
-
+@import url("~/assets/css/panel.css");
 
 
 

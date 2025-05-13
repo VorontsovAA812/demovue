@@ -1,0 +1,17 @@
+.commits-panel {
+  flex: 1;
+  max-width: 250px;
+  min-width: 200px;
+  max-height: 600px;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.commit-item {
+  margin-bottom: 12px;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 8px;
+}
