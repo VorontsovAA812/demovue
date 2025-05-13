@@ -71,9 +71,13 @@ definePageMeta({
   layout: false
 })
 
-import { onMounted } from 'vue';
-import { useEditor } from '@/composables/useEditor';
+import { onMounted } from 'vue'
+import { useEditor } from '@/composables/useEditor'
+import { useCommits } from '@/composables/useCommits'
 
+// Работа с коммитами
+const { commits, fetchCommits, restoreCommit } = useCommits()
+// Редактирование документа
 const {
   documentTitle,
   content,
@@ -86,12 +90,25 @@ const {
   saveDocument,
   compileDocument,
   inviteUser,
-  inviteUsername,
-  commits,
-  restoreCommit
-} = useEditor();
+  inviteUsername
+} = useEditor({ fetchCommits })
 
-onMounted(fetchDocumentContent);
+
+
+onMounted(() => {
+  fetchDocumentContent()
+  fetchCommits() // ID внутри useCommits
+})
+
+const formatDate = (raw) => {
+  const date = new Date(raw)
+  return date.toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 </script>
 
 <style>

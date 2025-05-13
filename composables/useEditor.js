@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-export function useEditor() {
+export function useEditor({ fetchCommits } = {}) {
   const documentTitle = ref('Новый документ');
   const content = ref('');
   const pdfUrl = ref('');
@@ -52,6 +52,8 @@ export function useEditor() {
       });
 
       alert('Документ успешно сохранен!');
+    fetchCommits()
+
     } catch (error) {
       console.error('Ошибка при сохранении документа:', error);
       alert('Произошла ошибка при сохранении документа');
