@@ -36,7 +36,7 @@
 .latex-input textarea {
   width: 100%;
   resize: none;
-  min-height: 600px;
+  min-height: 350px;
 }
 
 /* ====== КНОПКИ ====== */
