@@ -55,9 +55,10 @@
         <ul>
           <li v-for="commit in commits" :key="commit.id" class="commit-item">
             <div><strong>{{ commit.author }}</strong></div>
-            <div class="small">{{ commit.date }}</div>
+            <div class="small">{{ commit.date}}</div>
+              <div class="small">{{ commit.message }}</div>
             <button class="btn btn-sm btn-outline-primary mt-1" @click="restoreCommit(commit.id)">
-              Откатиться
+                  ⟳ Вернуться
             </button>
           </li>
         </ul>
@@ -100,15 +101,7 @@ onMounted(() => {
   fetchCommits() // ID внутри useCommits
 })
 
-const formatDate = (raw) => {
-  const date = new Date(raw)
-  return date.toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
+
 </script>
 
 <style>
