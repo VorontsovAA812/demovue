@@ -20,14 +20,19 @@
     <div class="editor-content">
       <!-- Левая часть -->
       <div class="editor-left">
-        <div class="document-title-input mb-3">
-          <input
-            v-model="documentTitle"
-            type="text"
-            class="form-control"
-            placeholder="Название документа"
-          />
-        </div>
+        <div class="document-title-input mb-3 d-flex align-items-center gap-2">
+  <input
+    v-model="documentTitle"
+    type="text"
+    class="form-control"
+    placeholder="Название документа"
+    style="max-width: 1050px;"
+  />
+  <button class="btn btn-outline-secondary" @click="renameDocument">
+     Переименовать
+  </button>
+</div>
+
 
         <div class="latex-input">
           <textarea
