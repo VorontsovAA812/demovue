@@ -2,7 +2,7 @@
   <div class="latex-container">
     <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
     <div class="editor-header-full">
-      <button class="back-button" @click="goToDocuments">← Назад</button>
+      <button class="back-button" @click="goToDocuments">← Назад к документам</button>
 
       <h1 class="editor-title">Редактор документов</h1>
 
@@ -47,6 +47,25 @@
             {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
           </button>
         </div>
+
+        <!-- БЛОК ПРОСМОТРА PDF -->
+        <div v-if="showPreview && pdfUrl" class="pdf-preview mt-4">
+          <h5>Предпросмотр PDF</h5>
+          <iframe
+            :src="pdfUrl"
+            width="100%"
+            height="600px"
+            style="border: 1px solid #ccc; border-radius: 8px;"
+          ></iframe>
+
+          <a
+            :href="pdfUrl"
+            download="compiled.pdf"
+            class="btn btn-outline-success mt-2"
+          >
+            ⬇ Скачать PDF
+          </a>
+        </div>
       </div>
 
       <!-- Правая часть -->
@@ -56,9 +75,9 @@
           <li v-for="commit in commits" :key="commit.id" class="commit-item">
             <div><strong>{{ commit.author }}</strong></div>
             <div class="small">{{ commit.date}}</div>
-              <div class="small">{{ commit.message }}</div>
+            <div class="small">{{ commit.message }}</div>
             <button class="btn btn-sm btn-outline-primary mt-1" @click="restoreCommit(commit.id)">
-                  ⟳ Вернуться
+              ⟳ Вернуться
             </button>
           </li>
         </ul>
@@ -66,6 +85,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 definePageMeta({
