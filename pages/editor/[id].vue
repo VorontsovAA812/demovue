@@ -48,6 +48,9 @@
           <button class="submit-button" @click.stop="saveDocument()">
             Сохранить документ
           </button>
+          <button class="submit-button" @click.stop="submitChanges()">
+    Внести в основную версию	
+  </button>
           <button class="compile-button" @click.stop="compileDocument()" :disabled="isCompiling">
             {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
           </button>
@@ -119,6 +122,10 @@ const {
   inviteUsername
 } = useEditor({ fetchCommits })
 
+function submitChanges() {
+  // Здесь будет логика отправки правок — сейчас просто сообщение:
+  alert("Правки отправлены!");
+}
 
 
 onMounted(() => {
