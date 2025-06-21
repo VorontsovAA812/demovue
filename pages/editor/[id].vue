@@ -45,16 +45,31 @@
         </div>
 
         <div class="buttons-container">
-          <button class="submit-button" @click.stop="saveDocument()">
-            Сохранить документ
-          </button>
-          <button class="submit-button" @click.stop="submitChanges()">
-    Внести в основную версию	
+  <button class="submit-button" @click.stop="saveDocument()">
+    Сохранить документ
   </button>
-          <button class="compile-button" @click.stop="compileDocument()" :disabled="isCompiling">
-            {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
-          </button>
-        </div>
+
+  <button class="submit-button" @click.stop="pullMain">
+    Обновить из основной версии
+  </button>
+
+  <button
+    class="submit-button"
+    :disabled="!canMergeToMain"
+    @click.stop="submitChanges"
+  >
+    Утвердить и внести в основную версию
+  </button>
+
+  <button
+    class="compile-button"
+    @click.stop="compileDocument()"
+    :disabled="isCompiling"
+  >
+    {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
+  </button>
+</div>
+
 
         <!-- БЛОК ПРОСМОТРА PDF -->
         <div v-if="showPreview && pdfUrl" class="pdf-preview mt-4">
@@ -119,13 +134,13 @@ const {
   saveDocument,
   compileDocument,
   inviteUser,
-  inviteUsername
+  inviteUsername,
+  pullMain,
+  submitChanges,
+  canMergeToMain
 } = useEditor({ fetchCommits })
 
-function submitChanges() {
-  // Здесь будет логика отправки правок — сейчас просто сообщение:
-  alert("Правки отправлены!");
-}
+
 
 
 onMounted(() => {
