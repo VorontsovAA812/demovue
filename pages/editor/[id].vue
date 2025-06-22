@@ -21,18 +21,17 @@
       <!-- Левая часть -->
       <div class="editor-left">
         <div class="document-title-input mb-3 d-flex align-items-center gap-2">
-  <input
-    v-model="documentTitle"
-    type="text"
-    class="form-control"
-    placeholder="Название документа"
-    style="max-width: 1050px;"
-  />
-  <button class="btn btn-outline-secondary" @click="renameDocument">
-     Переименовать
-  </button>
-</div>
-
+          <input
+            v-model="documentTitle"
+            type="text"
+            class="form-control"
+            placeholder="Название документа"
+            style="max-width: 1050px;"
+          />
+          <button class="btn btn-outline-secondary" @click="renameDocument">
+            Переименовать
+          </button>
+        </div>
 
         <div class="latex-input">
           <textarea
@@ -45,31 +44,31 @@
         </div>
 
         <div class="buttons-container">
-  <button class="submit-button" @click.stop="saveDocument()">
-    Сохранить документ
-  </button>
+          <button class="submit-button" @click.stop="saveDocument()">
+            Сохранить документ
+          </button>
 
-  <button class="submit-button" @click.stop="pullMain">
-    Обновить из основной версии
-  </button>
+          <button class="submit-button" @click.stop="pullMain">
+            Обновить из основной версии
+          </button>
 
-  <button
-    class="submit-button"
-    :disabled="!canMergeToMain"
-    @click.stop="submitChanges"
-  >
-    Утвердить и внести в основную версию
-  </button>
+          <button
+            class="submit-button"
+            :disabled="!canMergeToMain"
+            @click.stop="submitChanges"
+            :title="!canMergeToMain ? 'Сначала обновитесь из основной версии' : ''"
+          >
+            Утвердить и внести в основную версию
+          </button>
 
-  <button
-    class="compile-button"
-    @click.stop="compileDocument()"
-    :disabled="isCompiling"
-  >
-    {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
-  </button>
-</div>
-
+          <button
+            class="compile-button"
+            @click.stop="compileDocument()"
+            :disabled="isCompiling"
+          >
+            {{ isCompiling ? 'Компиляция...' : 'Скомпилировать и просмотреть' }}
+          </button>
+        </div>
 
         <!-- БЛОК ПРОСМОТРА PDF -->
         <div v-if="showPreview && pdfUrl" class="pdf-preview mt-4">
@@ -97,9 +96,12 @@
         <ul>
           <li v-for="commit in commits" :key="commit.id" class="commit-item">
             <div><strong>{{ commit.author }}</strong></div>
-            <div class="small">{{ commit.date}}</div>
+            <div class="small">{{ commit.date }}</div>
             <div class="small">{{ commit.message }}</div>
-            <button class="btn btn-sm btn-outline-primary mt-1" @click="restoreCommit(commit.id)">
+            <button
+              class="btn btn-sm btn-outline-primary mt-1"
+              @click="restoreCommit(commit.id)"
+            >
               ⟳ Вернуться
             </button>
           </li>
@@ -109,19 +111,15 @@
   </div>
 </template>
 
-
 <script setup>
-definePageMeta({
-  layout: false
-})
+definePageMeta({ layout: false });
 
-import { onMounted } from 'vue'
-import { useEditor } from '@/composables/useEditor'
-import { useCommits } from '@/composables/useCommits'
+import { onMounted } from 'vue';
+import { useEditor } from '@/composables/useEditor';
+import { useCommits } from '@/composables/useCommits';
 
-// Работа с коммитами
-const { commits, fetchCommits, restoreCommit } = useCommits()
-// Редактирование документа
+const { commits, fetchCommits, restoreCommit } = useCommits();
+
 const {
   documentTitle,
   content,
@@ -138,17 +136,12 @@ const {
   pullMain,
   submitChanges,
   canMergeToMain
-} = useEditor({ fetchCommits })
-
-
-
+} = useEditor({ fetchCommits });
 
 onMounted(() => {
-  fetchDocumentContent()
-  fetchCommits() // ID внутри useCommits
-})
-
-
+  fetchDocumentContent();
+  fetchCommits();
+});
 </script>
 
 <style>
@@ -158,6 +151,10 @@ onMounted(() => {
 @import url("~/assets/css/inviteButton.css");
 @import url("~/assets/css/panel.css");
 
-
-
+button.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: blur(0.4px);
+  transition: all 0.3s ease;
+}
 </style>
