@@ -53,13 +53,15 @@
           </button>
 
           <button
-            class="submit-button"
-            :disabled="!canMergeToMain"
-            @click.stop="submitChanges"
-            :title="!canMergeToMain ? 'Сначала обновитесь из основной версии' : ''"
-          >
-            Утвердить и внести в основную версию
-          </button>
+  class="submit-button"
+  :disabled="!canMergeToMain && !conflictDetected"
+  :title="!canMergeToMain && !conflictDetected ? 'Сначала обновитесь из основной версии или устраните конфликт' : ''"
+  @click.stop="submitChanges"
+>
+  Утвердить и внести в основную версию
+</button>
+
+
 
           <button
             class="compile-button"
@@ -135,7 +137,8 @@ const {
   inviteUsername,
   pullMain,
   submitChanges,
-  canMergeToMain
+  canMergeToMain,
+  hasConflict // ✅ добавлено
 } = useEditor({ fetchCommits });
 
 onMounted(() => {
@@ -143,6 +146,7 @@ onMounted(() => {
   fetchCommits();
 });
 </script>
+
 
 <style>
 @import url("~/assets/css/editor.css");

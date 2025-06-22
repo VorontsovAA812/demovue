@@ -9,6 +9,7 @@ export function useEditor({ fetchCommits } = {}) {
   const isCompiling = ref(false);
   const inviteUsername = ref('');
   const canMergeToMain = ref(false);
+  const conflictDetected = ref(false);
 
   const router = useRouter();
   const route = useRoute();
@@ -28,6 +29,9 @@ export function useEditor({ fetchCommits } = {}) {
       const response = await $fetch(`/api-proxy/documents/${documentId}`);
       content.value = response.content;
       documentTitle.value = response.title;
+
+      // Конфликт считается активным, если есть <<<<<<< HEAD
+      conflictDetected.value = content.value.includes('<<<<<<< HEAD');
     } catch (error) {
       console.error('Ошибка при загрузке документа:', error);
     }
@@ -54,6 +58,7 @@ export function useEditor({ fetchCommits } = {}) {
 
       alert('Документ успешно сохранен!');
       fetchCommits?.();
+      await fetchDocumentContent(); // Проверить — остался ли конфликт после сохранения
     } catch (error) {
       console.error('Ошибка при сохранении документа:', error);
       alert('Произошла ошибка при сохранении документа');
@@ -107,7 +112,6 @@ export function useEditor({ fetchCommits } = {}) {
         method: 'POST'
       });
       console.log('Reference created:', response.message);
-
     } catch (e) {
       console.error(e);
       alert('Ошибка при приглашении пользователя или создании главной ветки');
@@ -115,38 +119,28 @@ export function useEditor({ fetchCommits } = {}) {
   }
 
   async function pullMain() {
-  try {
-    const res = await $fetch(`/api-proxy/git/documents/${documentId}/pull-main`, {
-      method: 'POST'
-    });
+    try {
+      const res = await $fetch(`/api-proxy/git/documents/${documentId}/pull-main`, {
+        method: 'POST'
+      });
 
-    alert('Изменения из основной версии успешно подтянуты');
-    canMergeToMain.value = true;
+      alert('Изменения из основной версии успешно подтянуты');
+      canMergeToMain.value = true;
 
-    // 1. Обновление истории коммитов
-    await fetchCommits?.();
-
-    // 2. Загрузка актуального содержимого документа
-    await fetchDocumentContent?.();
-
-  } catch (e) {
-    if (e?.response?.status === 409) {
-      alert('Конфликты при слиянии main → ваша ветка. Устраните их вручную.');
-
-      // 1. Показываем main.tex с конфликтами
-      await fetchDocumentContent?.();
-
-      // 2. Обновляем историю коммитов — даже если конфликт
       await fetchCommits?.();
-
-      canMergeToMain.value = false;
-    } else {
-      alert('Ошибка при попытке подтянуть изменения из основной ветки.');
-      canMergeToMain.value = false;
+      await fetchDocumentContent?.();
+    } catch (e) {
+      if (e?.response?.status === 409) {
+        alert('Конфликты при слиянии main → ваша ветка. Устраните их вручную.');
+        await fetchDocumentContent?.();
+        await fetchCommits?.();
+        canMergeToMain.value = false;
+      } else {
+        alert('Ошибка при попытке подтянуть изменения из основной ветки.');
+        canMergeToMain.value = false;
+      }
     }
   }
-}
-
 
   async function submitChanges() {
     try {
@@ -176,6 +170,7 @@ export function useEditor({ fetchCommits } = {}) {
     inviteUser,
     pullMain,
     submitChanges,
-    canMergeToMain
+    canMergeToMain,
+    conflictDetected
   };
 }
